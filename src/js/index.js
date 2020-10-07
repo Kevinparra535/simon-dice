@@ -11,7 +11,14 @@ class Game {
     this.nextLevel();
   }
 
+  /*
+  this es el botón porque this en un addEventListener representa al elemento HTML al cual le asignamos ese evento, por ese motivo pasa de ser Game() a ser un elemento HTML.
+  Lo que hacemos con bind() es decirle: ¡No!, tú no serás un elemento HTML, tú serás Game(), digamos que cambiamos su forma de pensar del this.
+  Por si se les complica this, escribí un artículo hace tiempo que explica un poco quién realmente es this en diferentes situaciones.
+  */
+
   init() {
+    this.chooseColor = this.chooseColor.bind(this);
     btnEmpezar.classList.add("hide");
     this.level = 1;
     this.colors = {
@@ -30,6 +37,7 @@ class Game {
 
   nextLevel() {
     this.illuminateSequence();
+    this.addEventClick();
   }
 
   transformNumToColor(number) {
@@ -59,6 +67,17 @@ class Game {
 
   offColor(color) {
     this.colors[color].classList.remove("light");
+  }
+
+  addEventClick() {
+    this.colors.celeste.addEventListener("click", this.chooseColor);
+    this.colors.violeta.addEventListener("click", this.chooseColor);
+    this.colors.naranja.addEventListener("click", this.chooseColor);
+    this.colors.verde.addEventListener("click", this.chooseColor);
+  }
+
+  chooseColor(event) {
+    console.log(this);
   }
 }
 
