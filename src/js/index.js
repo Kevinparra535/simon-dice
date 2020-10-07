@@ -7,6 +7,7 @@ const FinishLevel = 10;
 
 class Game {
   constructor() {
+    this.init = this.init.bind(this);
     this.init();
     this.generateSecuency();
 
@@ -24,6 +25,7 @@ class Game {
   init() {
     this.nextLevel = this.nextLevel.bind(this);
     this.chooseColor = this.chooseColor.bind(this);
+    this.toogleBtnEmpezar();
     btnEmpezar.classList.add("hide");
     this.level = 1;
     this.colors = {
@@ -32,6 +34,14 @@ class Game {
       naranja,
       verde,
     };
+  }
+
+  toogleBtnEmpezar() {
+    if (btnEmpezar.classList.contains("hide")) {
+      btnEmpezar.classList.remove("hide");
+    } else {
+      btnEmpezar.classList.add("hide");
+    }
   }
 
   generateSecuency() {
@@ -111,16 +121,30 @@ class Game {
       this.subLevel++;
       if (this.subLevel === this.level) {
         this.level++;
+        alertify.success(`Subiste al nivel ${this.level}`);
         this.deleteEventClick();
         if (this.level === FinishLevel + 1) {
           // Win
+          this.winner();
         } else {
           setTimeout(this.nextLevel, 500);
         }
       }
     } else {
       // Perdio
+      this.loser();
+      alertify.error(`Puntuación: ${this.level} pts`);
     }
+  }
+
+  winner() {
+    swal("Simon dice que!", "Ganaste el juego", "succes").then(this.init);
+  }
+  loser() {
+    swal("Simon dice que!", "Perdiste el juego", "error").then(() => {
+      this.deleteEventClick();
+      this.init();
+    });
   }
 }
 
