@@ -3,12 +3,16 @@ const violeta = document.getElementById("violeta");
 const naranja = document.getElementById("naranja");
 const verde = document.getElementById("verde");
 const btnEmpezar = document.getElementById("btnEmpezar");
+const FinishLevel = 10;
 
 class Game {
   constructor() {
     this.init();
     this.generateSecuency();
-    this.nextLevel();
+
+    setTimeout(() => {
+      this.nextLevel();
+    }, 500);
   }
 
   /*
@@ -18,6 +22,7 @@ class Game {
   */
 
   init() {
+    this.nextLevel = this.nextLevel.bind(this);
     this.chooseColor = this.chooseColor.bind(this);
     btnEmpezar.classList.add("hide");
     this.level = 1;
@@ -30,7 +35,7 @@ class Game {
   }
 
   generateSecuency() {
-    this.secuency = new Array(10)
+    this.secuency = new Array(FinishLevel)
       .fill(0)
       .map((n) => Math.floor(Math.random() * 4));
   }
@@ -38,6 +43,7 @@ class Game {
   nextLevel() {
     this.illuminateSequence();
     this.addEventClick();
+    this.subLevel = 0;
   }
 
   transformNumToColor(number) {
@@ -50,6 +56,19 @@ class Game {
         return "naranja";
       case 3:
         return "verde";
+    }
+  }
+
+  transformColorToNum(color) {
+    switch (color) {
+      case "celeste":
+        return 0;
+      case "violeta":
+        return 1;
+      case "naranja":
+        return 2;
+      case "verde":
+        return 3;
     }
   }
 
@@ -76,8 +95,32 @@ class Game {
     this.colors.verde.addEventListener("click", this.chooseColor);
   }
 
+  deleteEventClick() {
+    this.colors.celeste.removeEventListener("click", this.chooseColor);
+    this.colors.violeta.removeEventListener("click", this.chooseColor);
+    this.colors.naranja.removeEventListener("click", this.chooseColor);
+    this.colors.verde.removeEventListener("click", this.chooseColor);
+  }
+
   chooseColor(event) {
+    const colorName = event.target.dataset.color;
+    const nummberColor = this.transformColorToNum(colorName);
+    this.illuminateColor(colorName);
     console.log(this);
+    if (nummberColor === this.secuency[this.subLevel]) {
+      this.subLevel++;
+      if (this.subLevel === this.level) {
+        this.level++;
+        this.deleteEventClick();
+        if (this.level === FinishLevel + 1) {
+          // Win
+        } else {
+          setTimeout(this.nextLevel, 500);
+        }
+      }
+    } else {
+      // Perdio
+    }
   }
 }
 
